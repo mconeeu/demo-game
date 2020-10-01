@@ -1,3 +1,5 @@
 name: MCONE-DemoGame
-main: eu.mcone.demogame
+main: eu.mcone.demogame.DemoGame
+depend: [ MCONE-BukkitCoreSystem, MCONE-GameAPI ]
+authors: [ Rausgemoved, rufusmai ]
 version: ${project.version}
