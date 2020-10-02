@@ -11,7 +11,7 @@ public class TeamManager {
      * Creates a HashMap which will save the points which belong to a {@link Team}
      */
     @Getter
-    private static HashMap<Team, Integer> points = new HashMap<>();
+    private final static HashMap<Team, Integer> points = new HashMap<>();
 
 
     /**
