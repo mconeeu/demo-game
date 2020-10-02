@@ -8,10 +8,24 @@ import org.bukkit.entity.Player;
 
 public class PointsCommand extends CorePlayerCommand {
 
+    /**
+     * Constructer which supers the {@link CorePlayerCommand} Constructer. Sets the Commandname to "points" and adds the required Permission "group.team"
+     */
     public PointsCommand() {
         super("points", "group.team");
     }
 
+    /**
+     * Overrides the onPlayerCommand Class from {@link CorePlayerCommand}
+     * Saves the {@link Messenger} in a Variable
+     * Sends a placeholder
+     * Gets the Points of every {@link eu.mcone.gameapi.api.team.Team} and sends them with the Label of the {@link eu.mcone.gameapi.api.team.Team}
+     * Sends a placeholder
+     *
+     * @param player
+     * @param strings
+     * @return
+     */
     @Override
     public boolean onPlayerCommand(Player player, String[] strings) {
         Messenger m = DemoGame.getInstance().getMessenger();
