@@ -2,7 +2,7 @@ package eu.mcone.demogame.util;
 
 import eu.mcone.coresystem.api.bukkit.player.CorePlayer;
 import eu.mcone.coresystem.api.bukkit.scoreboard.CoreSidebarObjectiveEntry;
-import eu.mcone.gameapi.api.GameAPI;
+import eu.mcone.demogame.DemoGame;
 import eu.mcone.gameapi.api.scoreboard.InGameObjective;
 import eu.mcone.gameapi.api.team.Team;
 
@@ -18,30 +18,37 @@ public class DemoScoreboard extends InGameObjective {
      */
     @Override
     protected void onInGameRegister(CorePlayer cp, CoreSidebarObjectiveEntry entry) {
-        entry.setScore(0, "Team-Ziel: §b40");
-        entry.setScore(1, "");
-        Team team = GameAPI.getInstance().getGamePlayer(cp).getTeam();
-        entry.setScore(2, "00 " + team.getLabel());
+        entry.setScore(2, "Team-Ziel: §b" + +DemoGame.POINTS_TO_WIN);
         entry.setScore(3, "");
+        int counter = 4;
+        for (Team team : DemoGame.getInstance().getTeamManager().getTeams()) {
+            entry.setScore(counter, "00 " + team.getLabel());
+            counter++;
+        }
+        entry.setScore(counter, "");
     }
 
     /**
      * Updates a {@link org.bukkit.scoreboard.Scoreboard}. ({@link org.bukkit.scoreboard.Scoreboard} Lines are set from the bottom up. (0 is bottom))
-     * Gets the amount of points a {@link Team} has out of the HashMap created in {@link TeamManager}
+     * Gets the amount of points a {@link Team} has. (Gets returned by the Goals of the Team)
+     *
      * @param cp
      * @param entry
      */
     @Override
     protected void onInGameReload(CorePlayer cp, CoreSidebarObjectiveEntry entry) {
-        entry.setScore(0, "Team-Ziel: §b40");
-        entry.setScore(1, "");
-        Team team = GameAPI.getInstance().getGamePlayer(cp).getTeam();
-        int points = TeamManager.getPoints().get(team);
-        if (points < 10) {
-            entry.setScore(2, "0" + points + " " + team.getLabel());
-        } else {
-            entry.setScore(2, points + " " + team.getLabel());
-        }
+        entry.setScore(2, "Team-Ziel: §b" + DemoGame.POINTS_TO_WIN);
         entry.setScore(3, "");
+        int counter = 4;
+        for (Team team : DemoGame.getInstance().getTeamManager().getTeams()) {
+            int points = team.getGoals();
+            if (points < 10) {
+                entry.setScore(counter, "0" + points + " " + team.getLabel());
+            } else {
+                entry.setScore(counter, points + " " + team.getLabel());
+            }
+            counter++;
+        }
+        entry.setScore(counter, "");
     }
 }

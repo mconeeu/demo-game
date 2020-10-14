@@ -3,15 +3,18 @@ package eu.mcone.demogame.util;
 import eu.mcone.coresystem.api.bukkit.CoreSystem;
 import eu.mcone.coresystem.api.bukkit.broadcast.SimpleBroadcast;
 import eu.mcone.coresystem.api.bukkit.item.ItemBuilder;
-import eu.mcone.coresystem.api.bukkit.player.CorePlayer;
 import eu.mcone.demogame.DemoGame;
 import eu.mcone.gameapi.api.event.gamestate.GameStateStartEvent;
 import eu.mcone.gameapi.api.gamestate.common.InGameState;
 import eu.mcone.gameapi.api.player.GamePlayerState;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Sound;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
-import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,13 +23,23 @@ import java.util.Random;
 
 public class DemoIngameState extends InGameState {
 
+    public static boolean hasStarted = false;
+
     /**
      * Static ArrayList which contains the SpawnLocations
      */
     private static final List<Location> locations = new ArrayList<>();
 
     /**
+     * Static Constructer which overrides the given Scoreboard with the selfmade one
+     */
+    static {
+        setObjective(DemoScoreboard.class);
+    }
+
+    /**
      * Returns a random SpawnLocation and removes it from the List Locations if shouldRemove is true
+     *
      * @return
      */
     public static Location getRandomSpawn(boolean shouldRemove) {
@@ -65,32 +78,40 @@ public class DemoIngameState extends InGameState {
             x.teleport(DemoGame.getInstance().getMinigameWorld().getLocation("game.spectator"));
         });
         DemoGame.getInstance().getPlayerManager().getPlayers(GamePlayerState.PLAYING).forEach(x -> {
+            x.getInventory().clear();
             x.teleport(getRandomSpawn(true));
-            CoreSystem.getInstance().getCorePlayer(x).getScoreboard().setNewObjective(new DemoScoreboard());
-            CoreSystem.getInstance().createTitle().title("§c5").send(x);
+            x.setGameMode(GameMode.ADVENTURE);
+            handleCountdown(x, "§c5");
             for (Items item : Items.values()) {
-                x.getInventory().setItem(item.getSlot(), new ItemBuilder(item.getMaterial()).displayName(CoreSystem.getInstance().getTranslationManager().get(item.getTranslation(), CoreSystem.getInstance().getCorePlayer(x))).unbreakable(true).itemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE).create());
+                if (item.isEnchant()) {
+                    ItemStack itemStack = new ItemBuilder(item.getMaterial()).displayName(CoreSystem.getInstance().getTranslationManager().get(item.getTranslation(), CoreSystem.getInstance().getCorePlayer(x))).unbreakable(true).enchantment(Enchantment.ARROW_INFINITE, 1).itemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE).create();
+                    x.getInventory().setItem(item.getSlot(), itemStack);
+                } else {
+                    x.getInventory().setItem(item.getSlot(), new ItemBuilder(item.getMaterial()).displayName(CoreSystem.getInstance().getTranslationManager().get(item.getTranslation(), CoreSystem.getInstance().getCorePlayer(x))).unbreakable(true).itemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE).create());
+                }
             }
         });
+
         Bukkit.getScheduler().runTaskLater(DemoGame.getInstance(), () -> {
             DemoGame.getInstance().getPlayerManager().getPlayers(GamePlayerState.PLAYING).forEach(x -> {
-                CoreSystem.getInstance().createTitle().title("§64").send(x);
+                handleCountdown(x, "§64");
             });
             Bukkit.getScheduler().runTaskLater(DemoGame.getInstance(), () -> {
                 DemoGame.getInstance().getPlayerManager().getPlayers(GamePlayerState.PLAYING).forEach(x -> {
-                    CoreSystem.getInstance().createTitle().title("§e3").send(x);
+                    handleCountdown(x, "§e3");
                 });
                 Bukkit.getScheduler().runTaskLater(DemoGame.getInstance(), () -> {
                     DemoGame.getInstance().getPlayerManager().getPlayers(GamePlayerState.PLAYING).forEach(x -> {
-                        CoreSystem.getInstance().createTitle().title("§a2").send(x);
+                        handleCountdown(x, "§a2");
                     });
                     Bukkit.getScheduler().runTaskLater(DemoGame.getInstance(), () -> {
                         DemoGame.getInstance().getPlayerManager().getPlayers(GamePlayerState.PLAYING).forEach(x -> {
-                            CoreSystem.getInstance().createTitle().title("§21").send(x);
+                            handleCountdown(x, "§21");
                         });
                         Bukkit.getScheduler().runTaskLater(DemoGame.getInstance(), () -> {
                             DemoGame.getInstance().getMessenger().broadcast(
                                     new SimpleBroadcast("demo.messages.gamestart"));
+                            hasStarted = true;
                             setLocations();
                         }, 20);
                     }, 20);
@@ -108,5 +129,10 @@ public class DemoIngameState extends InGameState {
                 locations.add(location.getKey());
             }
         }
+    }
+
+    public void handleCountdown(Player x, String title) {
+        CoreSystem.getInstance().createTitle().title(title).send(x);
+        x.playSound(x.getLocation(), Sound.NOTE_BASS, 1, 1);
     }
 }

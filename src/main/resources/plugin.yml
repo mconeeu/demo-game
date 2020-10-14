@@ -3,3 +3,9 @@ main: eu.mcone.demogame.DemoGame
 depend: [ MCONE-BukkitCoreSystem, MCONE-GameAPI ]
 authors: [ Rausgemoved, rufusmai ]
 version: ${project.version}
+
+translations:
+  - demo.messages.gamestart
+  - demo.items.iron_sword
+  - demo.items.bow
+  - demo.items.arrow

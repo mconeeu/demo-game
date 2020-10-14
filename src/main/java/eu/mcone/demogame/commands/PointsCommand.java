@@ -3,7 +3,6 @@ package eu.mcone.demogame.commands;
 import eu.mcone.coresystem.api.bukkit.broadcast.Messenger;
 import eu.mcone.coresystem.api.bukkit.command.CorePlayerCommand;
 import eu.mcone.demogame.DemoGame;
-import eu.mcone.demogame.util.TeamManager;
 import org.bukkit.entity.Player;
 
 public class PointsCommand extends CorePlayerCommand {
@@ -32,7 +31,7 @@ public class PointsCommand extends CorePlayerCommand {
 
         m.send(player, "==============Points==============");
         DemoGame.getInstance().getTeamManager().getTeams().forEach(x -> {
-            m.send(player, x.getLabel() + " " + TeamManager.getPoints().get(x));
+            m.send(player, x.getLabel() + " §f" + x.getGoals());
         });
         m.send(player, "==============Points==============");
         return false;

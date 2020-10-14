@@ -4,13 +4,11 @@ import eu.mcone.coresystem.api.bukkit.CoreSystem;
 import eu.mcone.coresystem.api.bukkit.world.CoreLocation;
 import eu.mcone.coresystem.api.bukkit.world.CoreWorld;
 import eu.mcone.demogame.listener.GeneralPlayerListener;
+import eu.mcone.demogame.util.DemoEndgameState;
 import eu.mcone.demogame.util.DemoIngameState;
-import eu.mcone.demogame.util.TeamManager;
 import eu.mcone.gameapi.api.GamePlugin;
 import eu.mcone.gameapi.api.Option;
-import eu.mcone.gameapi.api.gamestate.common.EndGameState;
 import eu.mcone.gameapi.api.gamestate.common.LobbyGameState;
-import eu.mcone.gameapi.api.team.Team;
 import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -35,7 +33,6 @@ public class BasicMainClass extends GamePlugin {
      */
     @Getter
     private CoreWorld minigameWorld;
-
 
     /**
      * Basic Constructer which supers the Constructer of {@link GamePlugin}, sets the Plugin Name, Color, Key to get the translated prefix out of the Database & (sets Options)
@@ -93,15 +90,9 @@ public class BasicMainClass extends GamePlugin {
          */
         getTeamManager().loadDefaultTeams();
         /**
-         * Iterates trough every {@link Team} in the List Teams initialized in the {@link TeamManager}
-         */
-        for (Team team : getTeamManager().getTeams()) {
-            TeamManager.getPoints().put(team, 0);
-        }
-        /**
          * Initializes the {@link eu.mcone.gameapi.api.gamestate.GameStateManager} and adds all the {@link eu.mcone.gameapi.api.gamestate.GameState} in the correct Order to a Pool
          */
-        getGameStateManager().addGameState(new LobbyGameState()).addGameState(new DemoIngameState()).addGameState(new EndGameState()).startGame();
+        getGameStateManager().addGameState(new LobbyGameState()).addGameState(new DemoIngameState()).addGameState(new DemoEndgameState()).startGame();
 
         /**
          * Sends a ConsoleMessage
