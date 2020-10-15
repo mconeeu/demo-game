@@ -25,13 +25,6 @@ import org.bukkit.util.Vector;
 
 public class GeneralPlayerListener implements Listener {
 
-    public static Team winnerTeam = null;
-    /**
-     * Static Boolean which is by Standard false
-     * but will be set to true when the result of the checkResult Method returns true
-     */
-    private static boolean gameEnded = false;
-
     /**
      * Checks if a Team would win the round
      *
@@ -157,7 +150,13 @@ public class GeneralPlayerListener implements Listener {
     @EventHandler
     public void on(EntityDamageEvent event) {
         EntityDamageEvent.DamageCause dc = event.getCause();
-        if (dc == EntityDamageEvent.DamageCause.FALL || dc == EntityDamageEvent.DamageCause.DROWNING || dc == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION || dc == EntityDamageEvent.DamageCause.LAVA || dc == EntityDamageEvent.DamageCause.FIRE_TICK) {
+        if (dc == EntityDamageEvent.DamageCause.FALL
+                || dc == EntityDamageEvent.DamageCause.DROWNING
+                || dc == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION
+                || dc == EntityDamageEvent.DamageCause.LAVA
+                || dc == EntityDamageEvent.DamageCause.FIRE_TICK
+                || dc == EntityDamageEvent.DamageCause.FIRE
+        ) {
             event.setCancelled(true);
             event.setDamage(0);
         }
@@ -172,7 +171,7 @@ public class GeneralPlayerListener implements Listener {
     @EventHandler
     public void on(PlayerRespawnEvent event) {
         event.getPlayer().setVelocity(new Vector(0, 0, 0));
-        if (!gameEnded) {
+        if (DemoGame.getInstance().getGameStateManager().getRunning() instanceof DemoIngameState) {
             event.setRespawnLocation(DemoIngameState.getRandomSpawn(false));
         }
     }
@@ -238,12 +237,11 @@ public class GeneralPlayerListener implements Listener {
             DemoGame.getInstance().getMessenger().broadcast(new KillBroadcast(killer, event.getEntity()));
             event.setKeepInventory(true);
             event.getEntity().spigot().respawn();
+            DemoGame.getInstance().getPlayerManager().getGamePlayers(GamePlayerState.PLAYING).forEach(x -> x.getCorePlayer().getScoreboard().reload());
+
             if (checkResult(team)) {
                 DemoGame.getInstance().getTeamManager().stopGameWithWinner(team);
-                winnerTeam = team;
-                gameEnded = true;
             }
-            DemoGame.getInstance().getPlayerManager().getGamePlayers(GamePlayerState.PLAYING).forEach(x -> x.getCorePlayer().getScoreboard().reload());
         }
     }
 

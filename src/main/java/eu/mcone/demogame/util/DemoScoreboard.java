@@ -18,9 +18,10 @@ public class DemoScoreboard extends InGameObjective {
      */
     @Override
     protected void onInGameRegister(CorePlayer cp, CoreSidebarObjectiveEntry entry) {
-        entry.setScore(2, "Team-Ziel: §b" + +DemoGame.POINTS_TO_WIN);
-        entry.setScore(3, "");
-        int counter = 4;
+        entry.setScore(0, "Team-Ziel: §b" + +DemoGame.POINTS_TO_WIN);
+        entry.setScore(1, "");
+
+        int counter = 2;
         for (Team team : DemoGame.getInstance().getTeamManager().getTeams()) {
             entry.setScore(counter, "00 " + team.getLabel());
             counter++;
@@ -37,9 +38,7 @@ public class DemoScoreboard extends InGameObjective {
      */
     @Override
     protected void onInGameReload(CorePlayer cp, CoreSidebarObjectiveEntry entry) {
-        entry.setScore(2, "Team-Ziel: §b" + DemoGame.POINTS_TO_WIN);
-        entry.setScore(3, "");
-        int counter = 4;
+        int counter = 2;
         for (Team team : DemoGame.getInstance().getTeamManager().getTeams()) {
             int points = team.getGoals();
             if (points < 10) {
@@ -49,6 +48,5 @@ public class DemoScoreboard extends InGameObjective {
             }
             counter++;
         }
-        entry.setScore(counter, "");
     }
 }

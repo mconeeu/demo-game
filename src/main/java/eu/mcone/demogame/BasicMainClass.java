@@ -4,10 +4,10 @@ import eu.mcone.coresystem.api.bukkit.CoreSystem;
 import eu.mcone.coresystem.api.bukkit.world.CoreLocation;
 import eu.mcone.coresystem.api.bukkit.world.CoreWorld;
 import eu.mcone.demogame.listener.GeneralPlayerListener;
-import eu.mcone.demogame.util.DemoEndgameState;
 import eu.mcone.demogame.util.DemoIngameState;
 import eu.mcone.gameapi.api.GamePlugin;
 import eu.mcone.gameapi.api.Option;
+import eu.mcone.gameapi.api.gamestate.common.EndGameState;
 import eu.mcone.gameapi.api.gamestate.common.LobbyGameState;
 import lombok.Getter;
 import org.bukkit.ChatColor;
@@ -92,7 +92,7 @@ public class BasicMainClass extends GamePlugin {
         /**
          * Initializes the {@link eu.mcone.gameapi.api.gamestate.GameStateManager} and adds all the {@link eu.mcone.gameapi.api.gamestate.GameState} in the correct Order to a Pool
          */
-        getGameStateManager().addGameState(new LobbyGameState()).addGameState(new DemoIngameState()).addGameState(new DemoEndgameState()).startGame();
+        getGameStateManager().addGameState(new LobbyGameState()).addGameState(new DemoIngameState()).addGameState(new EndGameState()).startGame();
 
         /**
          * Sends a ConsoleMessage
