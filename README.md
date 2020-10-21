@@ -6,7 +6,7 @@ using the [MCONE-CoreSystem](https://gitlab.onegaming.group/systems/coresystem)
 and the [MCONE-GameAPI](https://gitlab.onegaming.group/systems/gameapi) 
 and how to use the API classes provided by these plugins.
 
-**This git repository holds a [Wiki](https://gitlab.onegaming.group/minigames/demo/wiki) 
+**This git repository holds a [Wiki](https://gitlab.onegaming.group/minigames/demo/-/wikis) 
 where you can find a step-by-step guide how you create your own plugin with the use of CoreSystem and GameAPI.**
 
 ### Build and Compile
