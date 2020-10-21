@@ -7,6 +7,7 @@ import eu.mcone.demogame.DemoGame;
 import eu.mcone.gameapi.api.event.gamestate.GameStateStartEvent;
 import eu.mcone.gameapi.api.gamestate.common.InGameState;
 import eu.mcone.gameapi.api.player.GamePlayerState;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -16,14 +17,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 public class DemoIngameState extends InGameState {
 
     public static boolean hasStarted = false;
+    @Getter
+    private static final Map<Player, Location> lastSpawnLocations = new HashMap<>();
 
     /**
      * Static ArrayList which contains the SpawnLocations
@@ -35,6 +35,13 @@ public class DemoIngameState extends InGameState {
      */
     static {
         setObjective(DemoScoreboard.class);
+    }
+
+    /**
+     * Constructer which supers the Standard Constructer of the Mother Class and sets the Timeout to 30 Minutes
+     */
+    public DemoIngameState() {
+        super(1800);
     }
 
     /**
@@ -79,8 +86,10 @@ public class DemoIngameState extends InGameState {
         });
         DemoGame.getInstance().getPlayerManager().getPlayers(GamePlayerState.PLAYING).forEach(x -> {
             x.getInventory().clear();
-            x.teleport(getRandomSpawn(true));
+            Location location = getRandomSpawn(true);
+            x.teleport(location);
             x.setGameMode(GameMode.ADVENTURE);
+            DemoIngameState.getLastSpawnLocations().put(x, location);
             handleCountdown(x, "§c5");
             for (Items item : Items.values()) {
                 if (item.isEnchant()) {
@@ -131,6 +140,12 @@ public class DemoIngameState extends InGameState {
         }
     }
 
+    /**
+     * Creates a Title for a given Player and plays a Sound
+     *
+     * @param x
+     * @param title
+     */
     public void handleCountdown(Player x, String title) {
         CoreSystem.getInstance().createTitle().title(title).send(x);
         x.playSound(x.getLocation(), Sound.NOTE_BASS, 1, 1);

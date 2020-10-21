@@ -3,7 +3,6 @@ package eu.mcone.demogame;
 import eu.mcone.coresystem.api.bukkit.CoreSystem;
 import eu.mcone.coresystem.api.bukkit.world.CoreLocation;
 import eu.mcone.coresystem.api.bukkit.world.CoreWorld;
-import eu.mcone.demogame.listener.GeneralPlayerListener;
 import eu.mcone.demogame.util.DemoIngameState;
 import eu.mcone.gameapi.api.GamePlugin;
 import eu.mcone.gameapi.api.Option;
@@ -47,28 +46,28 @@ public class BasicMainClass extends GamePlugin {
      */
     @Override
     public void onGameEnable() {
-        /**
+        /*
          * Sets the static instance to this instance;
          */
         instance = this;
-        /**
+        /*
          * Gets a MinigameWorld by the Name "DemoGame" from the WorldManager located in the CoreSystem
          */
         minigameWorld = CoreSystem.getInstance().getWorldManager().getWorld("DemoGame");
 
-        /**
+        /*
          * Takes a List of Objects type: {@link eu.mcone.coresystem.api.bukkit.command.CorePlayerCommand}
          */
         registerCommands(
         );
 
-        /**
+        /*
          * Takes a List of Objects type: {@link org.bukkit.event.Listener}
          */
         registerEvents(
         );
 
-        /**
+        /*
          * Gets all Locations saved in the {@link CoreWorld} and puts them into the HashMap spawnLocations
          */
         for (Map.Entry<String, CoreLocation> location : minigameWorld.getLocations().entrySet()) {
@@ -77,24 +76,24 @@ public class BasicMainClass extends GamePlugin {
             }
         }
 
-        /**
+        /*
          * Initializes the {@link eu.mcone.gameapi.api.player.PlayerManager}
          */
         getPlayerManager();
-        /**
+        /*
          * Initializes the {@link eu.mcone.gameapi.api.damage.DamageLogger} (Important for the {@link GeneralPlayerListener} Class to get the Victims Damager)
          */
         getDamageLogger();
-        /**
+        /*
          * Initializes the {@link TeamManager} and loads a set of Default Teams
          */
         getTeamManager().loadDefaultTeams();
-        /**
+        /*
          * Initializes the {@link eu.mcone.gameapi.api.gamestate.GameStateManager} and adds all the {@link eu.mcone.gameapi.api.gamestate.GameState} in the correct Order to a Pool
          */
         getGameStateManager().addGameState(new LobbyGameState()).addGameState(new DemoIngameState()).addGameState(new EndGameState()).startGame();
 
-        /**
+        /*
          * Sends a ConsoleMessage
          */
         sendConsoleMessage("§aVersion §f" + this.getDescription().getVersion() + "§a enabled...");
@@ -106,7 +105,7 @@ public class BasicMainClass extends GamePlugin {
      */
     @Override
     public void onGameDisable() {
-        /**
+        /*
          * Sends a ConsoleMessage
          */
         sendConsoleMessage("§cDemoGame disabled!");

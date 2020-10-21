@@ -39,89 +39,89 @@ public class GeneralPlayerListener implements Listener {
      * Will be triggered when the {@link Player} achieves a {@link org.bukkit.Achievement}
      * The {@link org.bukkit.event.Event} gets cancelled
      *
-     * @param event
+     * @param e
      */
     @EventHandler
-    public void on(PlayerAchievementAwardedEvent event) {
-        event.setCancelled(true);
+    public void on(PlayerAchievementAwardedEvent e) {
+        e.setCancelled(true);
     }
 
     /**
      * Will be triggered when the {@link Player} {@link FoodLevelChangeEvent} changes
      * The {@link org.bukkit.event.Event} gets cancelled
      *
-     * @param event
+     * @param e
      */
     @EventHandler
-    public void on(FoodLevelChangeEvent event) {
-        event.setCancelled(true);
+    public void on(FoodLevelChangeEvent e) {
+        e.setCancelled(true);
     }
 
     /**
      * Will be triggered when the {@link Player} tries to enter a {@link org.bukkit.material.Bed}
      * The {@link org.bukkit.event.Event} gets cancelled
      *
-     * @param event
+     * @param e
      */
     @EventHandler
-    public void on(PlayerBedEnterEvent event) {
-        event.setCancelled(true);
+    public void on(PlayerBedEnterEvent e) {
+        e.setCancelled(true);
     }
 
     /**
      * Will be triggered when the {@link Player} tries to empty a bukket
      * The {@link org.bukkit.event.Event} gets cancelled
      *
-     * @param event
+     * @param e
      */
     @EventHandler
-    public void on(PlayerBucketEmptyEvent event) {
-        event.setCancelled(true);
+    public void on(PlayerBucketEmptyEvent e) {
+        e.setCancelled(true);
     }
 
     /**
      * Will be triggered when the {@link Player} tries to drop a item
      * The {@link org.bukkit.event.Event} gets cancelled
      *
-     * @param event
+     * @param e
      */
     @EventHandler
-    public void on(PlayerDropItemEvent event) {
-        event.setCancelled(true);
+    public void on(PlayerDropItemEvent e) {
+        e.setCancelled(true);
     }
 
     /**
      * Will be triggered when the {@link Player} tries to drop a item
      * The {@link org.bukkit.event.Event} gets cancelled
      *
-     * @param event
+     * @param e
      */
     @EventHandler
-    public void on(PlayerPickupItemEvent event) {
-        event.setCancelled(true);
+    public void on(PlayerPickupItemEvent e) {
+        e.setCancelled(true);
     }
 
     /**
      * Will be triggered when the {@link Player} tries to manipulate a {@link org.bukkit.entity.ArmorStand}
      * The {@link org.bukkit.event.Event} gets cancelled
      *
-     * @param event
+     * @param e
      */
     @EventHandler
-    public void on(PlayerArmorStandManipulateEvent event) {
-        event.setCancelled(true);
+    public void on(PlayerArmorStandManipulateEvent e) {
+        e.setCancelled(true);
     }
 
     /**
      * Will be triggered when the {@link Player} tries to interacts with something
      * The {@link org.bukkit.event.Event} gets cancelled
      *
-     * @param event
+     * @param e
      */
     @EventHandler
-    public void on(PlayerInteractEvent event) {
+    public void on(PlayerInteractEvent e) {
         if (!DemoIngameState.hasStarted) {
-            event.setCancelled(true);
+            e.setCancelled(true);
         }
     }
 
@@ -129,27 +129,33 @@ public class GeneralPlayerListener implements Listener {
      * Will be triggered when the {@link Player} tries to fish
      * The {@link org.bukkit.event.Event} gets cancelled
      *
-     * @param event
+     * @param e
      */
     @EventHandler
-    public void on(PlayerFishEvent event) {
-        event.setCancelled(true);
+    public void on(PlayerFishEvent e) {
+        e.setCancelled(true);
     }
 
+    /**
+     * Will be triggered when the {@link Player} tries to break a block
+     * The {@link org.bukkit.event.Event} gets cancelled
+     *
+     * @param e
+     */
     @EventHandler
-    public void on(BlockBreakEvent event) {
-        event.setCancelled(true);
+    public void on(BlockBreakEvent e) {
+        e.setCancelled(true);
     }
 
     /**
      * Will be triggered when a {@link org.bukkit.entity.Entity} gets damaged
      * The {@link org.bukkit.event.Event} gets cancelled
      *
-     * @param event
+     * @param e
      */
     @EventHandler
-    public void on(EntityDamageEvent event) {
-        EntityDamageEvent.DamageCause dc = event.getCause();
+    public void on(EntityDamageEvent e) {
+        EntityDamageEvent.DamageCause dc = e.getCause();
         if (dc == EntityDamageEvent.DamageCause.FALL
                 || dc == EntityDamageEvent.DamageCause.DROWNING
                 || dc == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION
@@ -157,8 +163,8 @@ public class GeneralPlayerListener implements Listener {
                 || dc == EntityDamageEvent.DamageCause.FIRE_TICK
                 || dc == EntityDamageEvent.DamageCause.FIRE
         ) {
-            event.setCancelled(true);
-            event.setDamage(0);
+            e.setCancelled(true);
+            e.setDamage(0);
         }
     }
 
@@ -166,13 +172,24 @@ public class GeneralPlayerListener implements Listener {
      * Will be triggered when the {@link Player} tries to respawn
      * The Respawnlocation will be set to a random Spawnlocation if the game didn't end yet. (Static Boolean gameEnded = false)
      *
-     * @param event
+     * @param e
      */
     @EventHandler
-    public void on(PlayerRespawnEvent event) {
-        event.getPlayer().setVelocity(new Vector(0, 0, 0));
+    public void on(PlayerRespawnEvent e) {
+        e.getPlayer().setVelocity(new Vector(0, 0, 0));
         if (DemoGame.getInstance().getGameStateManager().getRunning() instanceof DemoIngameState) {
-            event.setRespawnLocation(DemoIngameState.getRandomSpawn(false));
+            if (!DemoIngameState.getLastSpawnLocations().containsKey(e.getPlayer())) {
+                Location location = DemoIngameState.getRandomSpawn(false);
+                e.setRespawnLocation(location);
+                DemoIngameState.getLastSpawnLocations().put(e.getPlayer(), location);
+            } else {
+                Location location = DemoIngameState.getRandomSpawn(false);
+                while (DemoIngameState.getLastSpawnLocations().get(e.getPlayer()) == location) {
+                    location = DemoIngameState.getRandomSpawn(false);
+                }
+                DemoIngameState.getLastSpawnLocations().put(e.getPlayer(), location);
+                e.setRespawnLocation(location);
+            }
         }
     }
 
@@ -180,32 +197,32 @@ public class GeneralPlayerListener implements Listener {
      * Will be triggered when a {@link org.bukkit.entity.Entity} get damaged by an other {@link org.bukkit.entity.Entity}
      * Checks if the {@link org.bukkit.entity.Entity} is a {@link Player} and if the Damager is a {@link Player} or the Shooter (if the Damager is a Arrow) is a {@link Player}
      *
-     * @param event
+     * @param e
      */
     @EventHandler
-    public void on(EntityDamageByEntityEvent event) {
+    public void on(EntityDamageByEntityEvent e) {
         if (DemoGame.getInstance().getGameStateManager().getRunning() instanceof DemoIngameState) {
-            Player victim = (Player) event.getEntity();
-            if (event.getEntity() instanceof Player) {
-                if (event.getDamager() instanceof Player) {
-                    Player damager = (Player) event.getDamager();
+            Player victim = (Player) e.getEntity();
+            if (e.getEntity() instanceof Player) {
+                if (e.getDamager() instanceof Player) {
+                    Player damager = (Player) e.getDamager();
                     if (damager.getItemInHand().getType().equals(Items.IRON_SWORD.getMaterial())) {
                         if (!DemoGame.getInstance().getGamePlayer(victim).getTeam().equals(DemoGame.getInstance().getGamePlayer(damager).getTeam())) {
                             handleDeath(victim, damager);
                         } else {
-                            event.setCancelled(true);
+                            e.setCancelled(true);
                         }
                     }
-                } else if (event.getDamager() instanceof Arrow && ((Arrow) event.getDamager()).getShooter() instanceof Player) {
-                    if (!DemoGame.getInstance().getGamePlayer(victim).getTeam().equals(DemoGame.getInstance().getGamePlayer((Player) ((Arrow) event.getDamager()).getShooter()).getTeam())) {
-                        handleDeath(victim, (Player) ((Arrow) event.getDamager()).getShooter());
+                } else if (e.getDamager() instanceof Arrow && ((Arrow) e.getDamager()).getShooter() instanceof Player) {
+                    if (!DemoGame.getInstance().getGamePlayer(victim).getTeam().equals(DemoGame.getInstance().getGamePlayer((Player) ((Arrow) e.getDamager()).getShooter()).getTeam())) {
+                        handleDeath(victim, (Player) ((Arrow) e.getDamager()).getShooter());
                     } else {
-                        event.setCancelled(true);
+                        e.setCancelled(true);
                     }
                 }
             }
         } else {
-            event.setCancelled(true);
+            e.setCancelled(true);
         }
     }
 
@@ -220,23 +237,23 @@ public class GeneralPlayerListener implements Listener {
      * Check if the Killers {@link Team} would win the game (If yes: Stops game with Winner-{@link Team} which is the {@link Team} of the Killer and sets gameEnded to true)
      * Goes trough every {@link Player} in the Killers {@link Team} and reloads the {@link DemoScoreboard}
      *
-     * @param event
+     * @param e
      */
     @EventHandler
-    public void on(PlayerDeathEvent event) {
-        event.setDeathMessage(null);
-        event.getDrops().clear();
-        event.setDroppedExp(0);
-        Player killer = event.getEntity().getKiller() != null ? event.getEntity().getKiller() : DemoGame.getInstance().getDamageLogger().getKiller(event.getEntity());
+    public void on(PlayerDeathEvent e) {
+        e.setDeathMessage(null);
+        e.getDrops().clear();
+        e.setDroppedExp(0);
+        Player killer = e.getEntity().getKiller() != null ? e.getEntity().getKiller() : DemoGame.getInstance().getDamageLogger().getKiller(e.getEntity());
 
         if (killer != null) {
             Team team = GameAPI.getInstance().getGamePlayer(killer).getTeam();
             GamePlayer gp = GameAPI.getInstance().getGamePlayer(killer);
             gp.addGoals(1);
 
-            DemoGame.getInstance().getMessenger().broadcast(new KillBroadcast(killer, event.getEntity()));
-            event.setKeepInventory(true);
-            event.getEntity().spigot().respawn();
+            DemoGame.getInstance().getMessenger().broadcast(new KillBroadcast(killer, e.getEntity()));
+            e.setKeepInventory(true);
+            e.getEntity().spigot().respawn();
             DemoGame.getInstance().getPlayerManager().getGamePlayers(GamePlayerState.PLAYING).forEach(x -> x.getCorePlayer().getScoreboard().reload());
 
             if (checkResult(team)) {
@@ -245,12 +262,16 @@ public class GeneralPlayerListener implements Listener {
         }
     }
 
+    /**
+     * Checks if the Player should be able to move
+     * If the Countdown at the start of the game is still running. The Player should not be able to move
+     *
+     * @param e
+     */
     @EventHandler
-    public void on(PlayerMoveEvent event) {
-        Player player = event.getPlayer();
-        Location location = event.getFrom();
+    public void on(PlayerMoveEvent e) {
         if (DemoGame.getInstance().getGameStateManager().getRunning() instanceof DemoIngameState && !DemoIngameState.hasStarted) {
-            player.teleport(location);
+            e.getPlayer().teleport(e.getFrom());
         }
     }
 
