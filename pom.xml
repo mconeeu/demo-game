@@ -72,8 +72,8 @@
 
     <repositories>
         <repository>
-            <id>onegaming-gitlab-systems</id>
-            <url>https://gitlab.onegaming.group/api/v4/groups/systems/-/packages/maven</url>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/mconeeu/artifacts</url>
         </repository>
     </repositories>
 
@@ -94,13 +94,13 @@
         <dependency> <!-- MCONE BukkitCoresystem -->
             <groupId>eu.mcone.coresystem</groupId>
             <artifactId>bukkit-api</artifactId>
-            <version>10.9.1-SNAPSHOT</version>
+            <version>10.10.3-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency> <!-- MCONE GameApi -->
             <groupId>eu.mcone.gameapi</groupId>
             <artifactId>api</artifactId>
-            <version>4.1.1-SNAPSHOT</version>
+            <version>4.1.5-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
